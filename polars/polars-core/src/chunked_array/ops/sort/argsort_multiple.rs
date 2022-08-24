@@ -38,7 +38,7 @@ pub(crate) fn argsort_multiple_impl<T: PartialOrd + Send + IsFloat + Copy>(
 
     let first_reverse = reverse[0];
     vals.par_sort_by(
-        |tpl_a, tpl_b| match (first_reverse, sort_cmp(&tpl_a.1, &tpl_b.1)) {
+        |tpl_a, tpl_b| match (first_reverse, compare_fn_nan_max(&tpl_a.1, &tpl_b.1)) {
             // if ordering is equal, we check the other arrays until we find a non-equal ordering
             // if we have exhausted all arrays, we keep the equal ordering.
             (_, Ordering::Equal) => {

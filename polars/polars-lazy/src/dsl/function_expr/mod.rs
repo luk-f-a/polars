@@ -79,6 +79,11 @@ pub enum FunctionExpr {
     },
     #[cfg(feature = "list")]
     ListExpr(ListFunction),
+    #[cfg(feature = "top_k")]
+    TopK{
+        k: usize,
+        reverse: bool
+    }
 }
 
 #[cfg(feature = "trigonometry")]
@@ -226,6 +231,8 @@ impl FunctionExpr {
                     Concat => inner_super_type_list(),
                 }
             }
+            #[cfg(feature = "top_k")]
+            TopK{..} => same_type()
         }
     }
 }
@@ -368,6 +375,13 @@ impl From<FunctionExpr> for SpecialEq<Arc<dyn SeriesUdf>> {
                 match lf {
                     Concat => wrap!(list::concat),
                 }
+            }
+            #[cfg(feature = "top_k")]
+            TopK{
+                k,
+                reverse
+            } => {
+                map_with_args!(top_k, k, reverse)
             }
         }
     }

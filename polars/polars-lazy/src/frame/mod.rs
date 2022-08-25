@@ -729,6 +729,10 @@ impl LazyFrame {
 
         let mut state = ExecutionState::with_finger_prints(finger_prints);
         let out = physical_plan.execute(&mut state);
+        #[cfg(debug_assertions)]
+        {
+            state.file_cache.assert_empty();
+        }
         #[cfg(feature = "dtype-categorical")]
         if use_string_cache {
             toggle_string_cache(!use_string_cache);
